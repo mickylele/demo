@@ -5,7 +5,6 @@
  */
 package demo.service;
 
-import demo.bean.CategoryObj;
 import demo.bean.ProductObj;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -54,17 +52,13 @@ public class OrderMenuService {
 
             //SELECT結果の受け取り
             while (rset.next()) {
-                String productId = rset.getString(1);
-                String productName = rset.getString(2);
-                String productCount = rset.getString(3);
-                String productPrice = rset.getString(4);
-
+      
                 ProductObj obj = new ProductObj();
 
-                obj.setProductId(Integer.valueOf(rset.getString(1)));
+                obj.setProductId(rset.getInt(1));
                 obj.setProductName(rset.getString(2));
                 obj.setProductCount(rset.getInt(3));
-                obj.setProductPrice(Integer.valueOf(productPrice));
+                obj.setProductPrice(rset.getInt(4));
                 productObjList.add(obj);
             }
 

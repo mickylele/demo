@@ -7,12 +7,6 @@ package demo.mysys;
 
 import demo.bean.CategoryObj;
 import demo.service.CategoryService;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -34,7 +28,7 @@ public class Category extends javax.swing.JFrame {
 
         CategoryService s = new CategoryService();
         List<CategoryObj> categoryObjList = s.getCategoryList();
-        
+
         DefaultTableModel tableModel = (DefaultTableModel) jTable2.getModel();
         tableModel.setRowCount(0);
 
@@ -187,125 +181,30 @@ public class Category extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+
         MainMenu mainMean = new MainMenu();
         mainMean.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
 
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rset = null;
+        int categoryId = Integer.parseInt(jTextField1.getText());
+        String categoryName = jTextField2.getText();
 
-        // 接続文字列
-        String url = "jdbc:postgresql://localhost:5432/pr";
-        String user = "postgres";
-        String password = "postgres";
-
-        // PostgreSQLへ接続
-        try {
-
-            Class.forName("org.postgresql.Driver");
-
-            conn = DriverManager.getConnection(url, user, password);
-
-            //自動コミットOFF
-            conn.setAutoCommit(false);
-
-            //SELECT文の実行
-            stmt = conn.createStatement();
-
-            int categoryId = Integer.parseInt(jTextField1.getText());
-            String categoryName = jTextField2.getText();
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("INSERT INTO category (category_id, category_name) VALUES (");
-
-            sb.append(categoryId);
-            sb.append(",");
-            sb.append("'" + categoryName + "');");
-            System.out.println(sb.toString());
-
-            stmt.executeUpdate(sb.toString());
-            conn.commit();
-
-        } catch (SQLException | ClassNotFoundException e) {
-        } finally {
-            try {
-                if (rset != null) {
-                    rset.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-            }
-
-        }
+        CategoryService categoryService = new CategoryService();
+        categoryService.addCategory(categoryId, categoryName);
 
         getCategory();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rset = null;
 
-        // 接続文字列
-        String url = "jdbc:postgresql://localhost:5432/pr";
-        String user = "postgres";
-        String password = "postgres";
+        int categoryId = Integer.parseInt(jTextField1.getText());
+        String categoryName = jTextField2.getText();
 
-        // PostgreSQLへ接続
-        try {
-
-            Class.forName("org.postgresql.Driver");
-
-            conn = DriverManager.getConnection(url, user, password);
-
-            //自動コミットOFF
-            conn.setAutoCommit(false);
-
-            //SELECT文の実行
-            stmt = conn.createStatement();
-
-            int categoryId = Integer.parseInt(jTextField1.getText());
-            String categoryName = jTextField2.getText();
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("update  category set category_name=");
-
-            sb.append("'" + categoryName + "'");
-            sb.append(" WHERE category_id= ");
-            sb.append("'" + categoryId + "';");
-
-            System.out.println(sb.toString());
-            stmt.executeUpdate(sb.toString());
-            conn.commit();
-            
-        } catch (SQLException | ClassNotFoundException e) {
-        } finally {
-            try {
-                if (rset != null) {
-                    rset.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-            }
-
-        }
+        CategoryService categoryService = new CategoryService();
+        categoryService.editCategory(categoryId, categoryName);
 
         getCategory();
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -327,57 +226,15 @@ public class Category extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable2MousePressed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rset = null;
-
-        // 接続文字列
-        String url = "jdbc:postgresql://localhost:5432/pr";
-        String user = "postgres";
-        String password = "postgres";
-
-        // PostgreSQLへ接続
-        try {
-
-            Class.forName("org.postgresql.Driver");
-
-            conn = DriverManager.getConnection(url, user, password);
-
-            //自動コミットOFF
-            conn.setAutoCommit(false);
-
-            //SELECT文の実行
-            stmt = conn.createStatement();
-
+       
             int row = jTable2.getSelectedRow();
             DefaultTableModel tableModel = (DefaultTableModel) jTable2.getModel();
+            
             String categoryId = tableModel.getValueAt(row, 0).toString();
             String categoryName = tableModel.getValueAt(row, 1).toString();
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("DELETE FROM category WHERE category_id= ");
-            sb.append("'" + categoryId + "';");
-            System.out.println(sb.toString());
-
-            //INSERT文の実行
-            stmt.executeUpdate(sb.toString());
-            conn.commit();
-        } catch (SQLException | ClassNotFoundException e) {
-        } finally {
-            try {
-                if (rset != null) {
-                    rset.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-            }
-
-        }
+            
+            CategoryService categoryService = new CategoryService();
+        categoryService.deleteCategory(categoryId, categoryName);
 
         getCategory();
     }//GEN-LAST:event_jButton4ActionPerformed

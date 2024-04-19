@@ -5,7 +5,6 @@
  */
 package demo.service;
 
-import demo.bean.CategoryObj;
 import demo.bean.ProductObj;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -88,7 +87,15 @@ public class ProductService {
         }
         return productObjList;
     }
-
+    
+/**
+ * 商品登録処理
+ * @param productId
+ * @param productName
+ * @param productCount
+ * @param productPrice
+ * @param categoryId 
+ */
     public void addProduct(int productId, String productName, int productCount, int productPrice, Integer categoryId) {
 
         Connection conn = null;
@@ -146,8 +153,15 @@ public class ProductService {
 
         }
     }
-
-    public void editProduct(int productId, int productName,int productPrice, int productCount, Integer categoryId) {
+/**
+ * 商品編集処理
+ * @param productId
+ * @param productName
+ * @param productPrice
+ * @param productCount
+ * @param categoryId 
+ */
+    public void editProduct(int productId, String productName, int productPrice, int productCount, Integer categoryId) {
 
         Connection conn = null;
         Statement stmt = null;
@@ -158,7 +172,7 @@ public class ProductService {
         String user = "postgres";
         String password = "postgres";
 
-    // PostgreSQLへ接続
+        // PostgreSQLへ接続
         try {
 
             Class.forName("org.postgresql.Driver");
@@ -206,4 +220,62 @@ public class ProductService {
         }
 
     }
+
+    /**
+     * 商品削除処理
+     * @param productId
+     * @param productName
+     * @param productPrice
+     * @param productCount
+     * @param categoryId 
+     */
+    public void deleteProduct( int productId, String productName, int productPrice, int productCount, Integer categoryId) {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rset = null;
+
+        // 接続文字列
+        String url = "jdbc:postgresql://localhost:5432/pr";
+        String user = "postgres";
+        String password = "postgres";
+
+        // PostgreSQLへ接続
+        try {
+
+            Class.forName("org.postgresql.Driver");
+
+            conn = DriverManager.getConnection(url, user, password);
+
+            //自動コミットOFF
+            conn.setAutoCommit(false);
+
+            //SELECT文の実行
+            stmt = conn.createStatement();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("DELETE FROM productmanagement WHERE product_id=");
+            sb.append("" + productId + ";");
+
+            //INSERT文の実行
+            stmt.executeUpdate(sb.toString());
+            conn.commit();
+        } catch (SQLException | ClassNotFoundException e) {
+        } finally {
+            try {
+                if (rset != null) {
+                    rset.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+            }
+
+        }
+
+    }
+
 }

@@ -9,12 +9,6 @@ import demo.bean.CategoryObj;
 import demo.bean.ProductObj;
 import demo.service.CategoryService;
 import demo.service.ProductService;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
@@ -29,19 +23,19 @@ public class ProductManagement extends javax.swing.JFrame {
      * Creates new form Inventory2
      */
     public ProductManagement() {
-        
+
         initComponents();
         getProduct();
     }
-    
+
     private void getProduct() {
-        
+
         ProductService productService = new ProductService();
         List<ProductObj> productObjList = productService.getProductList();
-        
+
         DefaultTableModel tableModel = (DefaultTableModel) jTable1.getModel();
         tableModel.setRowCount(0);
-        
+
         for (ProductObj c : productObjList) {
             Object[] rowData = {
                 c.getProductId(),
@@ -49,28 +43,28 @@ public class ProductManagement extends javax.swing.JFrame {
                 c.getProductPrice(),
                 c.getProductCount(),
                 c.getCategoryId()};
-            
+
             tableModel.addRow(rowData);
-            
+
         }
-        
+
         updateCategoryComboBox();
-        
+
     }
-    
+
     private void updateCategoryComboBox() {
-        
+
         CategoryService s = new CategoryService();
         List<CategoryObj> categoryObjList = s.getCategoryList();
-        
+
         DefaultComboBoxModel<CategoryObj> model = new DefaultComboBoxModel<>();
-        
+
         for (CategoryObj category : categoryObjList) {
             model.addElement(category);
         }
-        
+
         jComboBox1.setModel(model);
-        
+
     }
 
     /**
@@ -254,24 +248,24 @@ public class ProductManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+
         int productId = Integer.parseInt(jTextField5.getText());
         String productName = jTextField6.getText();
         int productCount = Integer.parseInt(jTextField8.getText());
         int productPrice = Integer.parseInt(jTextField7.getText());
         Integer categoryId = null;
-        
+
         CategoryObj selectedItem = (CategoryObj) jComboBox1.getSelectedItem();
-        
+
         if (selectedItem != null) {
             System.out.println("Selected ID: " + selectedItem.getCategoryId());
-            
+
             categoryId = selectedItem.getCategoryId();
         }
-        
+
         ProductService productService = new ProductService();
         productService.addProduct(productId, productName, productCount, productPrice, categoryId);
-        
+
         getProduct();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -279,107 +273,49 @@ public class ProductManagement extends javax.swing.JFrame {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_jComboBox1ActionPerformed
-    
+
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rset = null;
 
-        // 接続文字列
-        String url = "jdbc:postgresql://localhost:5432/pr";
-        String user = "postgres";
-        String password = "postgres";
+        int productId = Integer.parseInt(jTextField5.getText());
+        String productName = jTextField6.getText();
+        int productCount = Integer.parseInt(jTextField8.getText());
+        int productPrice = Integer.parseInt(jTextField7.getText());
+        Integer categoryId = null;
 
-        // PostgreSQLへ接続
-        try {
-            
-            Class.forName("org.postgresql.Driver");
-            
-            conn = DriverManager.getConnection(url, user, password);
+        CategoryObj selectedItem = (CategoryObj) jComboBox1.getSelectedItem();
 
-            //自動コミットOFF
-            conn.setAutoCommit(false);
+        if (selectedItem != null) {
+            System.out.println("Selected ID: " + selectedItem.getCategoryId());
 
-            //SELECT文の実行
-            stmt = conn.createStatement();
-            
-            int productId = Integer.parseInt(jTextField5.getText());
-            String productName = jTextField6.getText();
-            String productPrice = jTextField7.getText();
-            String productCount = jTextField8.getText();
-            Integer categoryId = null;
-            
-            CategoryObj selectedItem = (CategoryObj) jComboBox1.getSelectedItem();
-            
-            if (selectedItem != null) {
-                System.out.println("Selected ID: " + selectedItem.getCategoryId());
-                
-                categoryId = selectedItem.getCategoryId();
-            }
-            
-            StringBuilder sb = new StringBuilder();
-            sb.append("UPDATE productmanagement SET product_name='");
-            sb.append(productName);
-            sb.append("', product_count=");
-            sb.append(productCount);
-            sb.append(", product_price=");
-            sb.append(productPrice);
-            sb.append(", category_id=");
-            sb.append(categoryId);
-            sb.append(" WHERE product_id=");
-            sb.append(productId);
-            sb.append(";");
-            
-            System.out.println(sb.toString());
-            stmt.executeUpdate(sb.toString());
-            conn.commit();
-            
-        } catch (SQLException | ClassNotFoundException e) {
-        } finally {
-            try {
-                if (rset != null) {
-                    rset.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-            }
-            
+            categoryId = selectedItem.getCategoryId();
         }
-        
-        Timestamp dateTime = new Timestamp(System.currentTimeMillis());
-        
-        System.out.println(dateTime);
-        
+        ProductService productService = new ProductService();
+        productService.editProduct(productId, productName, productCount, productPrice, categoryId);
+
         getProduct();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jTable1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MousePressed
-        
+
         DefaultTableModel tableModel = (DefaultTableModel) jTable1.getModel();
-        
+
         int row = jTable1.getSelectedRow();
-        
-        if (row != -1) {            
-            
+
+        if (row != -1) {
+
             String productId = tableModel.getValueAt(row, 0).toString();
             String productName = tableModel.getValueAt(row, 1).toString();
             String productCount = tableModel.getValueAt(row, 2).toString();
             String productPrice = tableModel.getValueAt(row, 3).toString();
             String categoryId = tableModel.getValueAt(row, 4).toString();
-            
+
             jTextField5.setText(productId);
             jTextField6.setText(productName);
             jTextField7.setText(productPrice);
             jTextField8.setText(productCount);
             jComboBox1.setSelectedItem(categoryId);
-            
+
         } else {
             jTextField5.setText("");
             jTextField6.setText("");
@@ -387,80 +323,32 @@ public class ProductManagement extends javax.swing.JFrame {
             jTextField8.setText("");
             jComboBox1.setSelectedIndex(-1);
         }
-        
+
         getProduct();
     }//GEN-LAST:event_jTable1MousePressed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rset = null;
 
-        // 接続文字列
-        String url = "jdbc:postgresql://localhost:5432/pr";
-        String user = "postgres";
-        String password = "postgres";
+        int row = jTable1.getSelectedRow();
+        DefaultTableModel tableModel = (DefaultTableModel) jTable1.getModel();
 
-        // PostgreSQLへ接続
-        try {
-            
-            Class.forName("org.postgresql.Driver");
-            
-            conn = DriverManager.getConnection(url, user, password);
+        int productId = Integer.parseInt(jTextField5.getText());
+        String productName = jTextField6.getText();
+        int productCount = Integer.parseInt(jTextField8.getText());
+        int productPrice = Integer.parseInt(jTextField7.getText());
+        Integer categoryId = null;
 
-            //自動コミットOFF
-            conn.setAutoCommit(false);
+        CategoryObj selectedItem = (CategoryObj) jComboBox1.getSelectedItem();
 
-            //SELECT文の実行
-            stmt = conn.createStatement();
-            
-            int row = jTable1.getSelectedRow();
-            DefaultTableModel tableModel = (DefaultTableModel) jTable1.getModel();
-            
-            int productId = Integer.parseInt(jTextField5.getText());
-            String productName = jTextField6.getText();
-            String productPrice = jTextField7.getText();
-            String productCount = jTextField8.getText();
-            Integer categoryId = null;
-            
-            CategoryObj selectedItem = (CategoryObj) jComboBox1.getSelectedItem();
-            
-            if (selectedItem != null) {
-                
-                System.out.println("Selected ID: " + selectedItem.getCategoryId());
-                
-                categoryId = selectedItem.getCategoryId();
-            }
-            
-            StringBuilder sb = new StringBuilder();
-            sb.append("DELETE FROM productmanagement WHERE product_id=");
-            sb.append("" + productId + ";");
+        if (selectedItem != null) {
 
-            //INSERT文の実行
-            stmt.executeUpdate(sb.toString());
-            conn.commit();
-        } catch (SQLException | ClassNotFoundException e) {
-        } finally {
-            try {
-                if (rset != null) {
-                    rset.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-            }
-            
+            System.out.println("Selected ID: " + selectedItem.getCategoryId());
+
+            categoryId = selectedItem.getCategoryId();
         }
-        
-        Timestamp dateTime = new Timestamp(System.currentTimeMillis());
-        
-        System.out.println(dateTime);
-        
+        ProductService productService = new ProductService();
+        productService.deleteProduct(productId, productName, productCount, productPrice, categoryId);
+
         getProduct();
     }//GEN-LAST:event_jButton4ActionPerformed
 

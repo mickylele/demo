@@ -7,7 +7,7 @@ package demo.mysys;
 
 
 import demo.bean.OrderManagementObj;
-import demo.service.OrderMaService;
+import demo.service.OrderManagementService;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -38,7 +38,7 @@ public final class OrderManagement extends javax.swing.JFrame {
 
     private void getOrderMenu() {
 
-       OrderMaService s = new OrderMaService();
+       OrderManagementService s = new OrderManagementService();
         List<OrderManagementObj> orderMenuObjList = s.getOrderMenuList();
         
         DefaultTableModel tableModel = (DefaultTableModel) jTable1.getModel();

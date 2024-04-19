@@ -262,10 +262,10 @@ public class OrderMenu extends javax.swing.JFrame {
         String categoryId = tableModel.getValueAt(row, 0).toString();
         OrderMenuService s = new OrderMenuService();
         List<ProductObj> productObjList = s.getProductList(categoryId);
-        // 获取 JTable 的模型
+
         DefaultTableModel tableModel1 = (DefaultTableModel) jTable2.getModel();
         tableModel1.setRowCount(0);
-        //SELECT結果の受け取り
+
         for (ProductObj c : productObjList) {
             Object[] rowData = {c.getProductId(), c.getProductName(), c.getProductCount(), c.getProductPrice()};
             tableModel1.addRow(rowData);
@@ -426,10 +426,11 @@ public class OrderMenu extends javax.swing.JFrame {
 
             String sql = "INSERT INTO OrderMenu (order_date, totalprice) VALUES (?,?)";
             preparedStatement = conn.prepareStatement(sql);
-            //preparedStatement.setInt(1, orderNumber);
+
             preparedStatement.setTimestamp(1, dateTime);
             preparedStatement.setInt(2, totalPrice);
             preparedStatement.executeUpdate();
+            
             StringBuilder sb = new StringBuilder();
             sb.append("select max(order_number ) as order_number from ordermenu");
             System.out.println(sb.toString());
@@ -446,7 +447,9 @@ public class OrderMenu extends javax.swing.JFrame {
                 String productName = tableModel1.getValueAt(i, 1).toString();
                 int productCount = Integer.parseInt(tableModel1.getValueAt(i, 2).toString());
                 int productPrice = Integer.parseInt(tableModel1.getValueAt(i, 3).toString());
+                
                 String sql1 = "INSERT INTO OrderDetails (product_id,product_name,product_count,product_price, order_number) VALUES  (?,?,?,?,?)";
+               
                 preparedStatement = conn.prepareStatement(sql1);
                 preparedStatement.setInt(1, productId);
                 preparedStatement.setString(2, productName);
