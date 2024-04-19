@@ -142,11 +142,7 @@ public class Test1 extends javax.swing.JFrame {
             conn.setAutoCommit(false);
  //SELECT文の実行
             stmt = conn.createStatement();
-            String id = jTextField1.getText();
-            String gender = jTextField2.getText();
-            int age = jTextField4.getText();
-            String password = jTextField3.getText();
-            
+           
             System.out.println(id);
             System.out.println(gender);
             System.out.println(age);
