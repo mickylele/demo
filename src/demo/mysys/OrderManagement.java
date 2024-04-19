@@ -57,6 +57,7 @@ public final class OrderManagement extends javax.swing.JFrame {
                 tableModel.addRow(rowData);
             } catch (Exception e) {
                 System.out.println("Error adding row to table: " + e.getMessage());
+                System.out.println("Error adding row to table: " + e.getMessage());
             }
         } 
     }
